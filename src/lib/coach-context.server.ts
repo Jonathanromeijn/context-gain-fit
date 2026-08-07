@@ -59,7 +59,7 @@ export async function buildTrainingContext(supabase: Db, userId: string): Promis
     finished_at: string | null;
     notes: string | null;
   }[];
-  const sets = (setsRes.data ?? []) as {
+  const sets = (setsRes.data ?? []) as unknown as {
     workout_id: string;
     weight: number;
     reps: number;
