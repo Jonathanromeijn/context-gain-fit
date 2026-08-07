@@ -214,7 +214,13 @@ function ExerciseBlock({
   });
 
   const update = useMutation({
-    mutationFn: async ({ id, patch }: { id: string; patch: Record<string, unknown> }) => {
+    mutationFn: async ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: { weight?: number; reps?: number; rpe?: number | null; set_type?: string };
+    }) => {
       const { error } = await supabase.from("workout_sets").update(patch).eq("id", id);
       if (error) throw error;
     },
