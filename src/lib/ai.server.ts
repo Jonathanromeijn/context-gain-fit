@@ -54,3 +54,30 @@ export function safeJson<T>(raw: string, fallback: T): T {
     return fallback;
   }
 }
+
+function normalize(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+export function matchExercise<T extends { id: string; name: string }>(
+  query: string,
+  list: T[],
+): T | null {
+  const q = normalize(query);
+  if (!q) return null;
+  let best: { item: T; score: number } | null = null;
+  for (const item of list) {
+    const n = normalize(item.name);
+    let score = 0;
+    if (n === q) score = 100;
+    else if (n.includes(q) || q.includes(n)) score = 70 + Math.min(20, q.length / 2);
+    else {
+      const qWords = new Set(q.split(" "));
+      const nWords = n.split(" ");
+      const hits = nWords.filter((w) => qWords.has(w)).length;
+      score = hits === 0 ? 0 : (hits / Math.max(nWords.length, qWords.size)) * 60;
+    }
+    if (score > 0 && (!best || score > best.score)) best = { item, score };
+  }
+  return best && best.score >= 30 ? best.item : null;
+}
