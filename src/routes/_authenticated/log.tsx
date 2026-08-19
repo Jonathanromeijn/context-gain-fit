@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { parseWorkoutText, suggestProgression } from "@/lib/ai.functions";
 import { fetchActiveWorkout, fetchExercises, fetchSets, fetchAllSets } from "@/lib/db";
 import { SET_TYPE_LABEL, epley1rm, setVolume, type SetType } from "@/lib/types";
+import { ExerciseImage } from "@/components/ExerciseImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -250,13 +251,16 @@ function ExerciseBlock({
   return (
     <section className="panel p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h2 className="text-lg font-semibold uppercase">{name}</h2>
-          {previous && (
-            <p className="num text-xs text-muted-foreground">
-              Best before: {previous.weight}kg × {previous.reps}
-            </p>
-          )}
+        <div className="flex items-center gap-3">
+          <ExerciseImage name={name} className="size-14" />
+          <div>
+            <h2 className="text-lg font-semibold uppercase">{name}</h2>
+            {previous && (
+              <p className="num text-xs text-muted-foreground">
+                Best before: {previous.weight}kg × {previous.reps}
+              </p>
+            )}
+          </div>
         </div>
         <Button size="sm" variant="ghost" onClick={suggest} disabled={loadingSuggestion}>
           <Sparkles /> {loadingSuggestion ? "Thinking" : "Ask coach"}
@@ -537,9 +541,10 @@ function AddExerciseDialog({
             <li key={e.id}>
               <button
                 onClick={() => add.mutate(e.id)}
-                className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-secondary"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-secondary"
               >
-                <span>{e.name}</span>
+                <ExerciseImage name={e.name} className="size-10" />
+                <span className="flex-1">{e.name}</span>
                 <span className="text-xs text-muted-foreground">{e.muscle}</span>
               </button>
             </li>
